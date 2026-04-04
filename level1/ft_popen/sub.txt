@@ -1,0 +1,67 @@
+Assignment name  : ft_popen
+Expected files   : ft_popen.c
+Allowed functions: pipe, fork, dup2, execvp, close, exit
+--------------------------------------------------------------------------------------
+
+Write the following function:
+
+int ft_popen(const char *file, char *const argv[], char type);
+
+この関数は、引数 argv を使用して（execvp 関数を用いて）実行可能ファイルを起動する
+    execvp: 新しいプログラムが利用可能な引数リストを表す、ヌル終端文字列へのポインタの配列を提供
+    
+If type is 'r' the function must return a file descriptor connected to the output of the command.
+If type is 'w' the function must return a file descriptor connected to the input of the command.
+In case of error or invalid parameter the function must return -1.
+
+For example, the function could be used like that:
+
+int main()
+{
+    int  fd;
+    char *line;
+
+    fd = ft_popen("ls", (char *const []){"ls", NULL}, 'r');
+    while ((line = get_next_line(fd)))
+        ft_putstr(line);
+    return (0);
+}
+
+
+int	main() {
+	int	fd = ft_popen("ls", (char *const []){"ls", NULL}, 'r');
+	dup2(fd, 0);
+	fd = ft_popen("grep", (char *const []){"grep", "c", NULL}, 'r');
+	char	*line;
+	while ((line = get_next_line(fd)))
+		printf("%s", line);
+}
+
+
+Hints:
+Do not leak file descriptors!
+This exercise is inspired by the libc's popen().
+
+
+-------------
+
+#include <stdio.h>
+FILE *popen(const char *command, const char *mode); <-> int pclose(FILE *stream);
+通常の標準 I/O ストリームと同じ
+
+popen():
+双方向パイプを作成 -> フォーク -> シェルを起動 -> プロセスを開く -> 親プロセスのストリームを子プロセスで閉じる
+
+mode: 双方向パイプ -> mode引数で [読み取り(r)かつ書き込み(w)](r+) を指定可能
+command: /bin/sh -c [command] -> shell実行
+
+戻り値FILE *: fclose() ではなく pclose() で閉じる
+    pclose(): 関連するプロセスが終了するのを待つ = wait4(2)の返り値と同じ、コマンドの終了ステータスを返す
+        戻り値: stream が「popen」されたコマンドに関連付けられていない場合 || stream がすでに「pclose」されている場合 || wait4(2) がエラーを返した場合 -> -1 を返す
+戻り値: fork(2) または pipe(2) の呼び出しが失敗した場合、あるいはメモリを割り当てることができなかった場合 : NULL
+
+標準出力: open() を呼び出したプロセスの標準出力と同じ
+
+popenされたストリームから読み込む = コマンドの標準出力が読み込まれる
+コマンドの標準入力 = popen()を呼び出したプロセスの標準入力と同じ
+popen() による出力ストリームは、デフォルトで完全にバッファリングされる
