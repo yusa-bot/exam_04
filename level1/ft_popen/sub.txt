@@ -8,8 +8,7 @@ Write the following function:
 int ft_popen(const char *file, char *const argv[], char type);
 
 この関数は、引数 argv を使用して（execvp 関数を用いて）実行可能ファイルを起動する
-    execvp: 新しいプログラムが利用可能な引数リストを表す、ヌル終端文字列へのポインタの配列を提供
-    
+
 If type is 'r' the function must return a file descriptor connected to the output of the command.
 If type is 'w' the function must return a file descriptor connected to the input of the command.
 In case of error or invalid parameter the function must return -1.

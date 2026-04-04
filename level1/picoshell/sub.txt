@@ -22,7 +22,7 @@ processes and return 0. You will find in this directory a file main.c which
 contain something to help you test your function.
 
 
-Examples: 
+Examples:
 ./picoshell /bin/ls "|" /usr/bin/grep picoshell
 picoshell
 ./picoshell echo 'squalala' "|" cat "|" sed 's/a/b/g'
@@ -37,3 +37,6 @@ array of strings. You have to create a pipeline using the cmds you receive from
 the main, and execute them. If there is any error the function should return 1.
 Close all FFS before returning. If the cmds executed successfully wait all
 child processes and return 0.
+
+
+execute a pipeline
