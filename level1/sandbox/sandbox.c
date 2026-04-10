@@ -29,8 +29,10 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
     sigaction(SIGALRM, &sa, NULL);
 
     pid = fork();
+
     if(pid == -1)
         return (-1);
+
     if( pid == 0)
     {
         f();
@@ -39,19 +41,22 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
 
     alarm(timeout); // n秒後にそのプロセス自身へ SIGALRM が届く -> EINTR
 
+	// timeout
     if(waitpid(pid, &status, 0) == -1) // SIGALRMは届いているので、待つのを邪魔された
     {
         if(errno == EINTR)
         {
             kill(pid, SIGKILL); // 子をkill
             waitpid(pid, NULL, 0);
-            
+
             if(verbose)
                 printf("Bad function: timed out after %u seconds\n", timeout);
             return(0);
         }
         return (-1);
     }
+
+	// status
     if(WIFEXITED(status))
     {
         if(WEXITSTATUS(status) == 0)
@@ -67,6 +72,8 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
             return (0);
         }
     }
+
+	// signal
     if(WIFSIGNALED(status))
     {
         if(verbose)

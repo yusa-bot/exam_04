@@ -9,9 +9,10 @@ int ft_popen(const char *file, char *const argv[], char type);
 
 この関数は、引数 argv を使用して（execvp 関数を用いて）実行可能ファイルを起動する
 
-If type is 'r' the function must return a file descriptor connected to the output of the command.
-If type is 'w' the function must return a file descriptor connected to the input of the command.
-In case of error or invalid parameter the function must return -1.
+typeが「r」の場合、関数はコマンドの出力に接続されたファイルディスクリプタを返さなければなりません。
+(= 子が出力につなげたfdを親が返す)
+typeが「w」の場合、関数はコマンドの入力に接続されたファイルディスクリプタを返さなければなりません。
+エラーまたは無効なパラメータの場合、関数は -1 を返さなければなりません。
 
 For example, the function could be used like that:
 
@@ -38,11 +39,12 @@ int	main() {
 
 
 Hints:
-Do not leak file descriptors!
-This exercise is inspired by the libc's popen().
-
+ファイルディスクリプタをリークさせてはいけません！
+この演習は、libcのpopen()関数にヒントを得ています。
 
 -------------
+
+- mymemo
 
 #include <stdio.h>
 FILE *popen(const char *command, const char *mode); <-> int pclose(FILE *stream);

@@ -185,6 +185,7 @@ int parse_map(json *dst, FILE *stream)
 	while (1)
 	{
 		c = peek(stream);
+
 		if (c != '"')
 		{
 			unexpected(stream);
@@ -192,7 +193,9 @@ int parse_map(json *dst, FILE *stream)
 		}
 
 		dst->map.data = realloc(dst->map.data, (dst->map.size + 1) * sizeof(pair));
+
 		pair *current = &dst->map.data[dst->map.size];
+
 		current->key = get_str(stream);
 		if (current->key == NULL)
 			return -1;

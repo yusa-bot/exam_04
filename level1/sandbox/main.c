@@ -40,7 +40,7 @@ void bad_function_abort(void)
     // Esta función llama abort()
     abort();
 }
- 
+
 
 
 int main()
@@ -61,4 +61,4 @@ int main()
 
     return 0;
 }
- 
+
