@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <malloc.h> // change this to <stdlib.h>
 #include <ctype.h>
+#include "vbc.h"
 
 typedef struct node {
     enum {
@@ -9,6 +10,7 @@ typedef struct node {
         VAL
     }   type;
     int val;
+
     struct node *l;
     struct node *r;
 }   node;
@@ -68,7 +70,7 @@ node    *parse_expr(char *s)
 {
     //...
 
-    if (*s) 
+    if (*s)
     {
         destroy_tree(ret);
         return (NULL);
@@ -76,6 +78,7 @@ node    *parse_expr(char *s)
     return (ret);
 }
 
+// printfする変数
 int eval_tree(node *tree)
 {
     switch (tree->type)
@@ -93,9 +96,12 @@ int main(int argc, char **argv)
 {
     if (argc != 2)
         return (1);
+
     node *tree = parse_expr(argv[1]);
     if (!tree)
         return (1);
+
     printf("%d\n", eval_tree(tree));
+
     destroy_tree(tree);
 }

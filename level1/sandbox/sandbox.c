@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +22,7 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
     pid_t pid;
     int status;
 
+    // 親ではSIGALRMを空のハンドラで受け取る
     sa.sa_handler = alarm_handler;
     sa.sa_flags = 0;
     sigemptyset(&sa.sa_mask);
@@ -34,14 +36,16 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
         f();
         exit(0);
     }
-   // child_pid = pid;
-    alarm(timeout);
-    if(waitpid(pid, &status, 0) == -1)
+
+    alarm(timeout); // n秒後にそのプロセス自身へ SIGALRM が届く -> EINTR
+
+    if(waitpid(pid, &status, 0) == -1) // SIGALRMは届いているので、待つのを邪魔された
     {
         if(errno == EINTR)
         {
-            kill(pid, SIGKILL);
+            kill(pid, SIGKILL); // 子をkill
             waitpid(pid, NULL, 0);
+            
             if(verbose)
                 printf("Bad function: timed out after %u seconds\n", timeout);
             return(0);

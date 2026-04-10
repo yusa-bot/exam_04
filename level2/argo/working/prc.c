@@ -1,8 +1,9 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h> // change this to <stdlib.h>
+
+typedef struct	pair
+{
+	char	*key;
+	json	value;
+}	pair;
 
 typedef struct	json
 {
@@ -12,6 +13,7 @@ typedef struct	json
 		INTEGER,
 		STRING
 	} type;
+
 	union // map or integer or string
 	{
 		struct
@@ -19,19 +21,13 @@ typedef struct	json
 			struct pair	*data;
 			size_t		size;
 		} map;
+
 		int	integer;
 		char	*string;
 	};
 }	json;
 
-typedef struct	pair
-{
-	char	*key;
-	json	value;
-}	pair;
 
-void	free_json(json j);
-int	argo(json *dst, FILE *stream);
 
 int	peek(FILE *stream)
 {
@@ -118,27 +114,4 @@ void	serialize(json j)
 			putchar('}');
 			break ;
 	}
-}
-
-int	main(int argc, char **argv)
-{
-	if (argc != 2)
-		return 1;
-
-	char *filename = argv[1];
-	FILE *stream = fopen(filename, "r");
-
-	json	file;
-
-	// &jsonとstreamを渡す
-	if (argo (&file, stream) != 1)
-	{
-		free_json(file);
-		return 1;
-	}
-
-	// argo()後のjson
-	serialize(file);// データを元に戻す
-	
-	printf("\n");
 }

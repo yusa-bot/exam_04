@@ -6,14 +6,18 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-typedef struct	json {
-	enum {
+typedef struct	json
+{
+	enum
+	{
 		MAP,
 		INTEGER,
 		STRING
 	} type;
-	union {
-		struct {
+	union
+	{
+		struct
+		{
 			struct pair	*data;
 			size_t		size;
 		} map;
@@ -22,7 +26,8 @@ typedef struct	json {
 	};
 }	json;
 
-typedef struct	pair {
+typedef struct	pair
+{
 	char	*key;
 	json	value;
 }	pair;
@@ -116,6 +121,7 @@ void	serialize(json j)
 			putchar('{');
 			for (size_t i = 0; i < j.map.size; i++)
 			{
+				//printf("j.map.size: %zu", j.map.size);
 				if (i != 0)
 					putchar(',');
 				serialize((json){.type = STRING, .string = j.map.data[i].key});
@@ -126,6 +132,8 @@ void	serialize(json j)
 			break ;
 	}
 }
+
+
 
 int	parse_int(json *dst, FILE *stream)
 {
@@ -141,21 +149,24 @@ char *get_str(FILE *stream)
 {
 	char *res = calloc(4096, sizeof(char));
 	int i = 0;
-	char c = getc(stream);
+	int c = getc(stream);
 
 	while (1)
 	{
 		c = getc(stream);
-		
+
 		if (c == '"')
 			break ;
 		if (c == EOF)
 		{
+			free(res);
 			unexpected(stream);
 			return NULL;
 		}
 		if (c == '\\')
+		{
 			c = getc(stream);
+		}
 		res[i++] = c;
 	}
 	return (res);
@@ -166,7 +177,7 @@ int parse_map(json *dst, FILE *stream)
 	dst->type = MAP;
 	dst->map.size = 0;
 	dst->map.data = NULL;
-	char c = getc(stream);
+	int c = getc(stream);
 
 	if (peek(stream) == '}')
 		return 1;
@@ -179,6 +190,7 @@ int parse_map(json *dst, FILE *stream)
 			unexpected(stream);
 			return -1;
 		}
+
 		dst->map.data = realloc(dst->map.data, (dst->map.size + 1) * sizeof(pair));
 		pair *current = &dst->map.data[dst->map.size];
 		current->key = get_str(stream);
@@ -216,8 +228,10 @@ int parser(json *dst, FILE *stream)
 		unexpected(stream);
 		return -1;
 	}
+
 	if (isdigit(c))
 		return (parse_int(dst, stream));
+
 	else if (c == '"')
 	{
 		dst->type = STRING;
@@ -226,8 +240,10 @@ int parser(json *dst, FILE *stream)
 			return (-1);
 		return (1);
 	}
+
 	else if (c == '{')
 		return (parse_map(dst, stream));
+
 	else
 	{
 		unexpected(stream);
@@ -243,6 +259,9 @@ int argo(json *dst, FILE *stream)
 	return 1;
 }
 
+
+
+
 int	main(int argc, char **argv)
 {
 	if (argc != 2)
@@ -257,7 +276,9 @@ int	main(int argc, char **argv)
 		free_json(file);
 		return 1;
 	}
-	serialize(file);
+
+	serialize(file); // データを元に戻す
+
+	free_json(file);
 	printf("\n");
 }
-

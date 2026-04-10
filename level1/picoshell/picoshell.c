@@ -20,7 +20,7 @@ int    picoshell(char **cmds[])
         pid = fork();   //create a child process
         if(pid == -1)    //if fork fails
         {
-            if(cmds[ i+ 1])  // if a pipe was created, close it
+            if(cmds[i+1])  // if a pipe was created, close it
             {
                 close(fd[0]);
                 close(fd[1]);
@@ -45,7 +45,7 @@ int    picoshell(char **cmds[])
             execvp(cmds[i][0], cmds[i]);  //execute the command
             exit(1); //if execvp fails, exit child with error
         }
-        if(last_fd != -1)   //if not the first command, close the previous pipe's read end 
+        if(last_fd != -1)   //if not the first command, close the previous pipe's read end
             close(last_fd);  // it's no longer needed in the parent
         if(cmds[i + 1])  // if there is a next command
         {
@@ -56,8 +56,8 @@ int    picoshell(char **cmds[])
     }
     // int last_status= 0;
     // while(wait(&status) != -1)  //wait for all child processes to finish
-    //     last_status = status; 
-        
+    //     last_status = status;
+
     //     if ( WIFEXITED(last_status)) //check if child exited with error
     //         return WEXITSTATUS(last_status);
     //     else
@@ -68,16 +68,16 @@ int    picoshell(char **cmds[])
         if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
             exit_code = 1;
     }
-    
+
     return exit_code;*/
     while(wait(NULL) > 0)
-    { 
+    {
     	;
     }
     return(0);
 }
 
-/*
+///*
 static int count_cmds(int argc, char **argv)
 {
     int count = 1;
@@ -99,23 +99,25 @@ int main(int argc, char **argv)
     if (!cmds)
         return (perror("calloc"), 1);
 
-    // Parsear argumentos y construir array de comandos
     int i = 1, j = 0;
     while (i < argc)
     {
         int len = 0;
         while (i + len < argc && strcmp(argv[i + len], "|") != 0)
             len++;
-        
+
         cmds[j] = calloc(len + 1, sizeof(char *));
         if (!cmds[j])
             return (perror("calloc"), 1);
-        
+
         for (int k = 0; k < len; k++)
             cmds[j][k] = argv[i + k];
         cmds[j][len] = NULL;
-        
-        i += len + 1;  // Saltar el "|"
+
+        // j: argv[]全体
+        // k: argv1個づつ
+
+        i += len + 1;  // 飛び越える "|"
         j++;
     }
     cmds[cmd_count] = NULL;
@@ -129,4 +131,4 @@ int main(int argc, char **argv)
 
     return ret;
 }
-*/
+//*/

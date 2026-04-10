@@ -3,17 +3,14 @@ Expected files   : *.c *.h
 Allowed functions: malloc, calloc, realloc, free, printf, isdigit, write
 --------------------------------------------------------------------------------
 
-Write a program that will print the result of a math expression given as
-argument.
-You must handle the operations + * and the parenthesis.
-You don't have to handle whitespaces in the expression.
-All the values in the expression will be between 0 and 9 included.
-In case of unexpected symbol or inappropriate parenthesis, you will
-print "Unexpected token '%c'\n" and exit with the code 1 (if the
-symbol is the end of input you will print: "Unexpected end of input\n").
-In case of a syscall failure you will just exit with the code 1.
-
-You will find in this directory the beginning of the code you need to write.
+引数として与えられた数式の計算結果を出力するプログラムを作成してください。
+演算子 + * と括弧を正しく処理する必要があります。
+式の中で空白文字を処理する必要はありません。
+式中の値はすべて0から9までの範囲になります。
+予期しない記号や不適切な括弧があった場合、"Unexpected token '%c'\n" と表示し、終了コード 1 で終了します。
+（記号が入力の終わりを示す場合は、"Unexpected end of input\n"と出力されます。）
+システムコールが失敗した場合は、コード1で終了します。
+このディレクトリには、記述する必要のあるコードの冒頭部分があります。
 
 For example this should work:
 $> ./vbc '1' | cat -e

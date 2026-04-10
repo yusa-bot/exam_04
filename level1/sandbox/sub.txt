@@ -7,20 +7,21 @@ errno, sigaddset, sigemptyset, sigfillset, sigdelset, sigismember
 Write the following function:
 
 #include <stdbool.h>
-int sandbox(void (*f)(void), unsigned int timeout, bool verbose);
 
-This function must test if the function f is a nice function or a bad function, you
-will return 1 if f is nice, 0 if f is bad or -1 in case of an error in your function.
+int sandbox(void (*f)(void), unsigned int timeout, bool verbose); // (*f), timeout, verbose
 
-A function is considered bad if it is terminated or stopped by a signal (segfault, abort...),
-if it exit with any other exit code than 0 or if it times out.
+この関数は、関数 f が良い関数か悪い関数かをテストする必要があります。
+関数fが良ければ1、悪ければ0、関数にエラーがあれば-1を返します。
 
-If verbose is true, you must write the appropriate message among the following:
+関数は、シグナル (segfault, abort...) によって終了または停止した場合、
+終了コードが0以外の場合、またはタイムアウトした場合、badとみなされます。
+
+verboseがtrueの場合、以下の選択肢の中から適切なメッセージを記述する必要があります。
+
 "Nice function!\n"
 "Bad function: exited with code <exit_code>\n"
 "Bad function: <signal description>\n"
 "Bad function: timed out after <timeout> seconds\n"
 
-You must not leak processes (even in zombie state, this will be checked using wait).
-
-We will test your code with very bad functions.
+プロセスをリークさせてはいけません（ゾンビ状態であっても、これはwaitを使用してチェックされます）。
+私たちはあなたのコードを very bad functions でテストします。
